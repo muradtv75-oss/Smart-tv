@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#c0392b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IPTV Smart">
+<link rel="manifest" href="manifest.json">
+<title>📺 IPTV Smart v3</title>
+<style>
+:root {
+  --red:#c0392b; --red2:#e74c3c; --red3:#ff6b6b;
+  --green:#27ae60; --green2:#2ecc71;
+  --blue:#2980b9; --blue2:#3498db;
+  --gold:#f39c12; --gold2:#f1c40f;
+  --purple:#8e44ad; --purple2:#9b59b6;
+  --bg:#0d0d0d; --bg2:#141414; --bg3:#1c1c1c; --bg4:#242424;
+  --border:#2a2a2a; --border2:#333;
+  --text:#f0f0f0; --text2:#ccc; --muted:#777;
+  --radius:16px; --radius2:12px; --radius3:8px;
+  --shadow:0 8px 32px rgba(0,0,0,0.6);
+  --glow-red:0 0 20px rgba(192,57,43,0.4);
+  --glow-green:0 0 20px rgba(39,174,96,0.4);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--red);border-radius:4px;}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,#1a0000 0%,#0d0d1a 60%,#000d1a 100%);
+  border-bottom:1px solid #2a1010;
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(20px);
+}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-icon{
+  width:44px;height:44px;
+  background:linear-gradient(135deg,var(--red),var(--red2));
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;
+  box-shadow:var(--glow-red);
+}
+.logo-text h1{font-size:1.15rem;color:#fff;font-weight:900;letter-spacing:2px;}
+.logo-text p{font-size:0.62rem;color:var(--muted);margin-top:2px;letter-spacing:1px;}
+.header-actions{display:flex;gap:8px;}
+.icon-btn{
+  width:40px;height:40px;
+  border:1px solid var(--border2);border-radius:12px;
+  background:var(--bg3);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;cursor:pointer;transition:all 0.2s;
+}
+.icon-btn:hover{border-color:var(--red);background:#2a0808;box-shadow:var(--glow-red);}
+
+/* ── TABS ── */
+.tabs{
+  display:flex;background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{
+  flex:1;min-width:70px;padding:11px 6px;
+  text-align:center;font-size:0.7rem;color:var(--muted);
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:all 0.2s;white-space:nowrap;user-select:none;
+}
+.tab.active{color:var(--red2);border-bottom-color:var(--red2);font-weight:700;}
+.tab .tab-icon{font-size:1.15rem;display:block;margin-bottom:3px;}
+
+/* ── PAGES ── */
+.page{display:none;padding:14px;}
+.page.active{display:block;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px;margin-bottom:12px;
+}
+.card-title{
+  font-size:0.78rem;font-weight:700;margin-bottom:12px;
+  display:flex;align-items:center;gap:7px;color:var(--red2);
+}
+
+/* ── SMARTERS CARD ── */
+.smarters-card{
+  background:linear-gradient(135deg,#0a1a0a,#001a10);
+  border:1px solid #1a4a1a;border-radius:var(--radius);
+  padding:14px;margin-bottom:12px;
+}
+.smarters-url-row{
+  display:flex;gap:8px;align-items:center;
+  background:var(--bg);border:1px solid var(--border2);
+  border-radius:var(--radius3);padding:10px 12px;
+  margin:8px 0;
+}
+.smarters-url{
+  flex:1;font-size:0.72rem;color:#4fc3f7;
+  direction:ltr;word-break:break-all;line-height:1.4;
+  font-family:monospace;
+}
+.copy-btn{
+  background:var(--green);color:#fff;border:none;
+  border-radius:8px;padding:7px 12px;font-size:0.75rem;
+  font-weight:700;cursor:pointer;white-space:nowrap;
+  transition:all 0.2s;flex-shrink:0;
+}
+.copy-btn:hover{background:var(--green2);box-shadow:var(--glow-green);}
+.copy-btn.copied{background:var(--blue);}
+
+/* ── INPUTS ── */
+.input-row{display:flex;gap:8px;}
+input[type="text"],input[type="url"]{
+  flex:1;background:var(--bg);border:1px solid var(--border2);
+  border-radius:var(--radius3);padding:11px 14px;
+  color:var(--text);font-size:0.85rem;direction:ltr;
+  transition:border 0.2s;
+}
+input:focus{outline:none;border-color:var(--red2);box-shadow:0 0 0 3px rgba(231,76,60,0.15);}
+
+/* ── BUTTONS ── */
+.btn{
+  padding:12px 18px;border:none;border-radius:var(--radius3);
+  cursor:pointer;font-weight:700;font-size:0.85rem;
+  transition:all 0.2s;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:7px;
+}
+.btn:active{transform:scale(0.96);}
+.btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+.btn-red   {background:linear-gradient(135deg,var(--red),var(--red2));color:#fff;}
+.btn-red:hover:not(:disabled){box-shadow:var(--glow-red);}
+.btn-green {background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;}
+.btn-green:hover:not(:disabled){box-shadow:var(--glow-green);}
+.btn-blue  {background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;}
+.btn-gold  {background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;}
+.btn-ghost {background:var(--bg3);color:var(--text2);border:1px solid var(--border2);}
+.btn-ghost:hover{border-color:var(--red2);}
+.btn-full  {width:100%;justify-content:center;margin-top:8px;}
+
+/* ── SOURCE GRID ── */
+.sources-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.source-btn{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--radius2);padding:12px 8px;
+  cursor:pointer;transition:all 0.2s;text-align:center;
+  position:relative;overflow:hidden;
+}
+.source-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(192,57,43,0.1),transparent);
+  opacity:0;transition:opacity 0.2s;
+}
+.source-btn:hover{border-color:var(--red2);transform:translateY(-2px);box-shadow:var(--glow-red);}
+.source-btn:hover::before{opacity:1;}
+.source-btn:active{transform:translateY(0);}
+.s-flag{font-size:1.6rem;display:block;margin-bottom:5px;}
+.s-name{font-size:0.72rem;color:var(--text);font-weight:700;}
+.s-sub {font-size:0.6rem;color:var(--muted);margin-top:2px;}
+
+/* ── QUICK DL GRID ── */
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.quick-btn{
+  background:linear-gradient(135deg,#0a2a0a,#0a1a2a);
+  border:1px solid #1a3a1a;border-radius:var(--radius2);
+  padding:12px 8px;cursor:pointer;transition:all 0.2s;
+  text-align:center;display:flex;flex-direction:column;
+  align-items:center;gap:5px;
+}
+.quick-btn:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:var(--glow-green);}
+.quick-btn:active{transform:translateY(0);}
+.q-icon{font-size:1.5rem;}
+.q-name{font-size:0.72rem;color:var(--text);font-weight:700;}
+.q-sub {font-size:0.58rem;color:var(--muted);}
+.q-badge{
+  background:var(--green);color:#fff;
+  font-size:0.55rem;font-weight:700;
+  padding:2px 7px;border-radius:10px;
+}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.stat{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius2);padding:10px 4px;text-align:center;
+}
+.stat .n{font-size:1.4rem;font-weight:900;}
+.stat .l{font-size:0.58rem;color:var(--muted);margin-top:3px;}
+.stat.s-red    .n{color:var(--red2);}
+.stat.s-gold   .n{color:var(--gold);}
+.stat.s-green  .n{color:var(--green2);}
+.stat.s-dead   .n{color:#e74c3c;}
+
+/* ── PROGRESS ── */
+.progress-box{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 16px;
+  margin-bottom:12px;display:none;
+}
+.progress-box.show{display:block;}
+.progress-info{display:flex;justify-content:space-between;margin-bottom:8px;}
+.progress-info span,.progress-info strong{font-size:0.78rem;color:var(--muted);}
+.progress-info strong{color:var(--text);}
+.pbar-bg{background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;}
+.pbar{
+  background:linear-gradient(90deg,var(--red),var(--red2),var(--red3));
+  height:100%;width:0%;border-radius:6px;
+  transition:width 0.3s;
+}
+
+/* ── SEARCH ── */
+.search-wrap{position:relative;margin-bottom:10px;}
+.search-wrap input{width:100%;padding-right:42px;direction:rtl;}
+.search-icon{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1rem;pointer-events:none;}
+
+/* ── FILTER TAGS ── */
+.filter-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.ftag{
+  padding:7px 13px;border-radius:20px;
+  border:1px solid var(--border2);background:var(--bg3);
+  color:var(--muted);cursor:pointer;font-size:0.75rem;
+  transition:all 0.2s;user-select:none;
+}
+.ftag.on{background:var(--red2);border-color:var(--red2);color:#fff;font-weight:700;}
+.ftag:hover{border-color:var(--red2);color:#fff;}
+
+/* ── CHANNEL LIST ── */
+.ch-toolbar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.ch-list{
+  display:flex;flex-direction:column;gap:5px;
+  max-height:52vh;overflow-y:auto;padding-right:2px;
+}
+.ch-item{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius2);padding:11px 12px;
+  display:flex;align-items:center;gap:10px;
+  cursor:pointer;transition:all 0.15s;user-select:none;
+}
+.ch-item:hover{border-color:var(--border2);background:var(--bg3);}
+.ch-item.sel {border-color:var(--green);background:#0a1a0a;}
+.ch-item.dead{opacity:0.35;}
+.ch-thumb{
+  width:40px;height:40px;border-radius:10px;
+  background:var(--bg3);display:flex;align-items:center;
+  justify-content:center;font-size:1.3rem;flex-shrink:0;overflow:hidden;
+}
+.ch-thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+.ch-info{flex:1;min-width:0;}
+.ch-name {font-size:0.82rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-group{font-size:0.63rem;color:var(--muted);margin-top:2px;}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--border2);}
+.dot.ok     {background:var(--green2);box-shadow:0 0 7px var(--green2);}
+.dot.dead   {background:#e74c3c;}
+.dot.testing{background:var(--gold);animation:blink 0.7s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:50px 20px;color:var(--muted);}
+.empty-icon{font-size:3.5rem;margin-bottom:12px;display:block;}
+.empty p{font-size:0.85rem;line-height:1.7;}
+
+/* ── UPLOAD ── */
+.upload-zone{
+  border:2px dashed var(--border2);border-radius:var(--radius);
+  padding:28px 20px;text-align:center;cursor:pointer;
+  transition:all 0.2s;background:var(--bg2);margin-bottom:12px;
+}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--red2);background:#1a0808;}
+.uz-icon{font-size:2.8rem;margin-bottom:8px;display:block;}
+.upload-zone h3{font-size:0.9rem;color:var(--text);margin-bottom:4px;}
+.upload-zone p {font-size:0.73rem;color:var(--muted);}
+#fileInput{display:none;}
+
+/* ── SAVED ── */
+.saved-item{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius2);padding:12px 14px;
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:8px;cursor:pointer;transition:all 0.2s;
+}
+.saved-item:hover{border-color:var(--red2);}
+.saved-info{flex:1;min-width:0;}
+.saved-name{font-size:0.85rem;font-weight:700;color:var(--text);}
+.saved-meta{font-size:0.63rem;color:var(--muted);margin-top:2px;}
+
+/* ── SETTINGS ── */
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 0;border-bottom:1px solid var(--border);
+}
+.setting-row:last-child{border-bottom:none;}
+.setting-label{font-size:0.83rem;color:var(--text);}
+.setting-sub  {font-size:0.67rem;color:var(--muted);margin-top:2px;}
+.toggle{width:46px;height:26px;background:var(--border2);border-radius:13px;position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+.toggle.on{background:var(--red2);}
+.toggle::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:3px;right:3px;transition:right 0.2s;}
+.toggle.on::after{right:23px;}
+
+/* ── UPDATE BADGE ── */
+.update-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:20px;padding:5px 12px;font-size:0.7rem;color:var(--muted);
+}
+.update-badge.warn{border-color:var(--gold);color:var(--gold);}
+.update-badge.ok  {border-color:var(--green);color:var(--green);}
+
+/* ── LOADING ── */
+.loading-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.9);z-index:500;
+  align-items:center;justify-content:center;flex-direction:column;gap:16px;
+}
+.loading-overlay.show{display:flex;}
+.spinner{
+  width:52px;height:52px;
+  border:4px solid var(--border2);border-top-color:var(--red2);
+  border-radius:50%;animation:spin 0.7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text);font-size:1rem;font-weight:700;}
+.loading-sub {color:var(--muted);font-size:0.75rem;}
+.loading-bar-wrap{width:200px;background:var(--bg3);border-radius:6px;height:4px;overflow:hidden;}
+.loading-bar{background:var(--red2);height:100%;width:0%;border-radius:6px;transition:width 0.4s;animation:loadpulse 1.5s ease-in-out infinite;}
+@keyframes loadpulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(100px);
+  background:var(--bg3);border:1px solid var(--border2);
+  color:var(--text);padding:11px 22px;
+  border-radius:30px;font-size:0.82rem;
+  transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  z-index:999;white-space:nowrap;max-width:92vw;text-align:center;
+  box-shadow:var(--shadow);
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.ok {border-color:var(--green2);color:var(--green2);}
+.toast.err{border-color:var(--red3);color:var(--red3);}
+.toast.info{border-color:var(--blue2);color:var(--blue2);}
+
+/* ── INSTALL ── */
+.install-banner{
+  background:linear-gradient(135deg,#1a0030,#001a20);
+  border:1px solid #330033;border-radius:var(--radius);
+  padding:14px;display:flex;align-items:center;gap:12px;
+  margin-bottom:12px;cursor:pointer;
+}
+.ib-icon{font-size:2.2rem;flex-shrink:0;}
+.install-banner h3{font-size:0.85rem;color:#fff;}
+.install-banner p {font-size:0.68rem;color:var(--muted);margin-top:2px;}
+.ib-btn{margin-right:auto;background:var(--red2);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:0.75rem;font-weight:700;cursor:pointer;flex-shrink:0;}
+
+/* ── TV / LARGE SCREEN ── */
+@media(min-width:800px){
+  .page{max-width:860px;margin:0 auto;}
+  .sources-grid{grid-template-columns:repeat(4,1fr);}
+  .quick-grid{grid-template-columns:repeat(4,1fr);}
+  .ch-item{padding:13px 16px;}
+  .ch-name{font-size:0.95rem;}
+  .btn{font-size:0.95rem;padding:13px 22px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">جاري التحميل...</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
+  <div class="loading-sub" id="loadingSub">يرجى الانتظار</div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">📺</div>
+    <div class="logo-text">
+      <h1>IPTV SMART</h1>
+      <p>V3 • عربي • ألماني • عالمي</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="icon-btn" onclick="doInstall()" title="تثبيت">⬇️</div>
+    <div class="icon-btn" onclick="goTab('settings')" title="إعدادات">⚙️</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" data-tab="home"     onclick="goTab('home')"><span class="tab-icon">🏠</span>الرئيسية</div>
+  <div class="tab"        data-tab="smarters" onclick="goTab('smarters')"><span class="tab-icon">🔗</span>Smarters</div>
+  <div class="tab"        data-tab="browse"   onclick="goTab('browse')"><span class="tab-icon">🔍</span>تصفح</div>
+  <div class="tab"        data-tab="channels" onclick="goTab('channels')"><span class="tab-icon">📺</span>القنوات</div>
+  <div class="tab"        data-tab="saved"    onclick="goTab('saved')"><span class="tab-icon">💾</span>محفوظة</div>
+</div>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div class="page active" id="page-home">
+
+  <div class="install-banner" id="installBanner" style="display:none" onclick="doInstall()">
+    <div class="ib-icon">📲</div>
+    <div><h3>ثبّت التطبيق على جهازك</h3><p>يعمل بدون إنترنت — موبايل وتلفزيون</p></div>
+    <button class="ib-btn">تثبيت</button>
+  </div>
+
+  <!-- حالة الملف -->
+  <div class="card" style="padding:12px 14px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div class="card-title" style="margin:0;">🔄 حالة الملف</div>
+      <span id="updateBadge" class="update-badge">⏳ لم يتم التصدير بعد</span>
+    </div>
+    <div id="updateWarning" style="display:none;color:var(--gold);font-size:0.75rem;margin-top:8px;font-weight:700;">
+      ⚠️ مضى أكثر من 7 أيام — يُنصح بتحديث الملف!
+    </div>
+  </div>
+
+  <!-- ⚡ تحديث وحفظ مباشرة -->
+  <div class="card" style="background:linear-gradient(135deg,#0a1a0a,#001010);border-color:#1a3a1a;">
+    <div class="card-title">⚡ تحديث وحفظ مباشرة</div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">اضغط ← يجلب أحدث الروابط ← يحفظ ملف جاهز للـ USB</div>
+    <div class="quick-grid">
+      <div class="quick-btn" onclick="fetchAndSave('https://iptv-org.github.io/iptv/languages/ara.m3u','عربي-كامل')">
+        <span class="q-icon">🌍</span>
+        <div class="q-name">عربي كامل</div>
+        <span class="q-badge">~300</span>
+      </div>
+      <div class="quick-btn" onclick="fetchAndSave('https://iptv-org.github.io/iptv/countries/de.m3u','ألمانية')">
+        <span class="q-icon">🇩🇪</span>
+        <div class="q-name">ألمانية</div>
+        <span class="q-badge">ARD•ZDF</span>
+      </div>
+      <div class="quick-btn" onclick="fetchAndSave('https://iptv-org.github.io/iptv/categories/sports.m3u','رياضة')">
+        <span class="q-icon">⚽</span>
+        <div class="q-name">رياضة</div>
+        <span class="q-badge">~200</span>
+      </div>
+      <div class="quick-btn" onclick="fetchAndSaveAll()" style="border-color:#2a4a2a;">
+        <span class="q-icon">🌐</span>
+        <div class="q-name">الكل</div>
+        <span class="q-badge" style="background:var(--gold);color:#000;">دفعة</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- مصادر عربية -->
+  <div class="card">
+    <div class="card-title">🌍 قنوات عربية</div>
+    <div class="sources-grid">
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/languages/ara.m3u','عربي كامل')">
+        <span class="s-flag">🌍</span><div class="s-name">عربي كامل</div><div class="s-sub">~300 قناة</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/countries/sa.m3u','سعودية')">
+        <span class="s-flag">🇸🇦</span><div class="s-name">سعودية</div><div class="s-sub">MBC • روتانا</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/countries/ae.m3u','إماراتية')">
+        <span class="s-flag">🇦🇪</span><div class="s-name">إماراتية</div><div class="s-sub">دبي • أبوظبي</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/countries/eg.m3u','مصرية')">
+        <span class="s-flag">🇪🇬</span><div class="s-name">مصرية</div><div class="s-sub">ON • DMC</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- مصادر ألمانية -->
+  <div class="card">
+    <div class="card-title">🇩🇪 قنوات ألمانية وأوروبية</div>
+    <div class="sources-grid">
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/countries/de.m3u','ألمانية')">
+        <span class="s-flag">🇩🇪</span><div class="s-name">ألمانية</div><div class="s-sub">ARD • ZDF • RTL</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/countries/fr.m3u','فرنسية')">
+        <span class="s-flag">🇫🇷</span><div class="s-name">فرنسية</div><div class="s-sub">TF1 • M6</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/countries/gb.m3u','إنجليزية')">
+        <span class="s-flag">🇬🇧</span><div class="s-name">إنجليزية</div><div class="s-sub">BBC • ITV</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/countries/tr.m3u','تركية')">
+        <span class="s-flag">🇹🇷</span><div class="s-name">تركية</div><div class="s-sub">TRT • Show</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- حسب النوع -->
+  <div class="card">
+    <div class="card-title">🎬 حسب النوع</div>
+    <div class="sources-grid">
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/categories/movies.m3u','أفلام')">
+        <span class="s-flag">🎬</span><div class="s-name">أفلام</div><div class="s-sub">عالمية</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/categories/sports.m3u','رياضة')">
+        <span class="s-flag">⚽</span><div class="s-name">رياضة</div><div class="s-sub">كل الرياضات</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/categories/entertainment.m3u','ترفيه')">
+        <span class="s-flag">🎭</span><div class="s-name">ترفيه</div><div class="s-sub">متنوع</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/categories/news.m3u','أخبار')">
+        <span class="s-flag">📰</span><div class="s-name">أخبار</div><div class="s-sub">CNN•BBC•DW</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/categories/kids.m3u','أطفال')">
+        <span class="s-flag">👶</span><div class="s-name">أطفال</div><div class="s-sub">Disney•Cartoon</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/countries/us.m3u','أمريكية')">
+        <span class="s-flag">🇺🇸</span><div class="s-name">أمريكية</div><div class="s-sub">NBC•CBS•ABC</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/countries/it.m3u','إيطالية')">
+        <span class="s-flag">🇮🇹</span><div class="s-name">إيطالية</div><div class="s-sub">RAI•Mediaset</div>
+      </div>
+      <div class="source-btn" onclick="quickLoad('https://iptv-org.github.io/iptv/countries/es.m3u','إسبانية')">
+        <span class="s-flag">🇪🇸</span><div class="s-name">إسبانية</div><div class="s-sub">TVE•Antena</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat s-red"  ><div class="n" id="sTotal">0</div><div class="l">إجمالي</div></div>
+    <div class="stat s-gold" ><div class="n" id="sFiltered">0</div><div class="l">معروضة</div></div>
+    <div class="stat s-green"><div class="n" id="sWorking">0</div><div class="l">✅ شغالة</div></div>
+    <div class="stat s-dead" ><div class="n" id="sDead">0</div><div class="l">❌ ميتة</div></div>
+  </div>
+
+  <!-- آخر قائمة -->
+  <div class="card" id="lastActionCard" style="display:none;">
+    <div class="card-title">📋 آخر قائمة محملة</div>
+    <div id="lastActionInfo" style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-red"   onclick="goTab('channels')">📺 عرض القنوات</button>
+      <button class="btn btn-green" id="btnExportHome" onclick="exportSelected()">💾 حفظ للـ USB</button>
+      <button class="btn btn-blue"  id="btnTestHome"   onclick="startTest()">⚡ فحص سريع</button>
+    </div>
+  </div>
+
+  <div class="progress-box" id="progressBox">
+    <div class="progress-info">
+      <span id="pLabel">جاري الفحص...</span>
+      <strong id="pPct">0%</strong>
+    </div>
+    <div class="pbar-bg"><div class="pbar" id="pBar"></div></div>
+  </div>
+
+  <!-- تعليمات -->
+  <div class="card">
+    <div class="card-title">💡 كيف تستخدم التطبيق</div>
+    <div style="font-size:0.75rem;color:var(--muted);line-height:2.2;">
+      <div>1️⃣ اختر مصدر ← تظهر القنوات تلقائياً</div>
+      <div>2️⃣ اضغط ⚡ فحص سريع لمعرفة الشغالة</div>
+      <div>3️⃣ اضغط 💾 حفظ للـ USB للحصول على الملف</div>
+      <div>4️⃣ أو اذهب لـ <strong style="color:var(--green2);">Smarters</strong> للحصول على رابط مباشر</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════ SMARTERS ══════════════ -->
+<div class="page" id="page-smarters">
+
+  <div class="card" style="background:linear-gradient(135deg,#001a0a,#001520);border-color:#1a4a2a;">
+    <div class="card-title" style="color:var(--green2);">🔗 روابط مباشرة لـ IPTV Smarters</div>
+    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:14px;line-height:1.8;">
+      افتح <strong style="color:#fff;">IPTV Smarters Pro</strong> ← <strong style="color:#fff;">Add Playlist URL</strong> ← الصق الرابط أدناه ✅<br>
+      بدون USB بدون ملفات — مباشرة على التلفزيون أو الموبايل 📺
+    </div>
+  </div>
+
+  <!-- روابط Smarters -->
+  <div class="card">
+    <div class="card-title">🌍 قنوات عربية</div>
+    <div id="smartersArabic"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🇩🇪 قنوات أوروبية</div>
+    <div id="smartersEurope"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎬 حسب النوع</div>
+    <div id="smartersCategory"></div>
+  </div>
+
+</div>
+
+<!-- ══════════════ BROWSE ══════════════ -->
+<div class="page" id="page-browse">
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+    <span class="uz-icon">📂</span>
+    <h3>ارفع ملف M3U من جهازك</h3>
+    <p>اسحب الملف هنا أو اضغط للاختيار</p>
+    <input type="file" id="fileInput" accept=".m3u,.m3u8,.txt">
+  </div>
+  <div class="card">
+    <div class="card-title">🔗 رابط قائمة مخصص</div>
+    <div class="input-row">
+      <input type="url" id="urlInput" placeholder="https://..." dir="ltr">
+      <button class="btn btn-red" onclick="loadURL()">تحميل</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🎯 فلتر النوع</div>
+    <div class="filter-tags" id="filterTags">
+      <div class="ftag on" data-k="all">✅ الكل</div>
+      <div class="ftag" data-k="action">💥 أكشن</div>
+      <div class="ftag" data-k="movies">🎬 أفلام</div>
+      <div class="ftag" data-k="entertainment">🎭 ترفيه</div>
+      <div class="ftag" data-k="sports">⚽ رياضة</div>
+      <div class="ftag" data-k="news">📰 أخبار</div>
+      <div class="ftag" data-k="kids">👶 أطفال</div>
+      <div class="ftag" data-k="music">🎵 موسيقى</div>
+      <div class="ftag" data-k="series">📺 مسلسلات</div>
+      <div class="ftag" data-k="documentary">🎥 وثائقي</div>
+    </div>
+    <button class="btn btn-red btn-full" id="btnFilter" onclick="applyFilter()" disabled>🔍 تطبيق الفلتر</button>
+  </div>
+</div>
+
+<!-- ══════════════ CHANNELS ══════════════ -->
+<div class="page" id="page-channels">
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="ابحث عن قناة..." oninput="renderChannels()" dir="rtl">
+    <span class="search-icon">🔍</span>
+  </div>
+  <div class="ch-toolbar">
+    <button class="btn btn-ghost" style="font-size:0.72rem;padding:7px 11px;" onclick="selectAll()">☑️ الكل</button>
+    <button class="btn btn-ghost" style="font-size:0.72rem;padding:7px 11px;" onclick="deselectAll()">⬜ إلغاء</button>
+    <button class="btn btn-ghost" style="font-size:0.72rem;padding:7px 11px;" onclick="selectWorking()">✅ شغالة</button>
+    <span id="selCount" style="font-size:0.72rem;color:var(--muted);margin-right:auto;line-height:32px;"></span>
+  </div>
+  <div id="chList" class="ch-list">
+    <div class="empty"><span class="empty-icon">📺</span><p>اذهب للرئيسية واختر مصدراً</p></div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+    <button class="btn btn-green" id="btnExport" onclick="exportSelected()" disabled>💾 USB</button>
+    <button class="btn btn-blue"  id="btnSave"   onclick="saveList()"       disabled>📌 حفظ</button>
+    <button class="btn btn-red"   id="btnTest"   onclick="startTest()"      disabled>⚡ فحص</button>
+  </div>
+</div>
+
+<!-- ══════════════ SAVED ══════════════ -->
+<div class="page" id="page-saved">
+  <div class="card">
+    <div class="card-title">📌 القوائم المحفوظة</div>
+    <div id="savedList">
+      <div class="empty"><span class="empty-icon">📂</span><p>لا توجد قوائم محفوظة بعد</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══ STATE ═══
+let allCh=[], filteredCh=[], testing=false;
+let deferredPrompt=null;
+let savedLists=JSON.parse(localStorage.getItem('iptv_saved')||'[]');
+
+const CATS={
+  action:       ['action','اكشن','أكشن','thriller','crime','fox','cinemax','amc'],
+  movies:       ['movie','film','cinema','أفلام','افلام','mbc2','mbc max','rotana cinema','bein movies','kino','cine'],
+  entertainment:['entertainment','ترفيه','comedy','كوميدي','mbc1','mbc4','rotana','dubai','abu dhabi','show','general','mbc'],
+  sports:       ['sport','رياضة','football','كرة','bein sport','espn','eurosport','الدوري','premier','liga','champions'],
+  news:         ['news','أخبار','اخبار','cnn','bbc','aljazeera','الجزيرة','alarabiya','العربية','france24','sky','dw'],
+  kids:         ['kids','أطفال','cartoon','كرتون','disney','nickelodeon','spacetoon','براعم','toyor'],
+  music:        ['music','موسيقى','clip','mazika','طرب','نغم','rotana music'],
+  documentary:  ['documentary','وثائقي','national','geographic','history','discovery'],
+  series:       ['series','مسلسل','drama','دراما','turkish','تركي'],
+};
+const CAT_ICONS={action:'💥',movies:'🎬',entertainment:'🎭',sports:'⚽',news:'📰',kids:'👶',music:'🎵',documentary:'🎥',series:'📺',other:'📡'};
+
+function getCat(ch){
+  const t=(ch.name+' '+ch.group).toLowerCase();
+  for(const[c,keys]of Object.entries(CATS)) if(keys.some(k=>t.includes(k))) return c;
+  return 'other';
+}
+
+// ═══ SMARTERS URLS ═══
+const SMARTERS_URLS={
+  arabic:[
+    {flag:'🌍',name:'عربي كامل',url:'https://iptv-org.github.io/iptv/languages/ara.m3u'},
+    {flag:'🇸🇦',name:'سعودية',url:'https://iptv-org.github.io/iptv/countries/sa.m3u'},
+    {flag:'🇦🇪',name:'إماراتية',url:'https://iptv-org.github.io/iptv/countries/ae.m3u'},
+    {flag:'🇪🇬',name:'مصرية',url:'https://iptv-org.github.io/iptv/countries/eg.m3u'},
+  ],
+  europe:[
+    {flag:'🇩🇪',name:'ألمانية',url:'https://iptv-org.github.io/iptv/countries/de.m3u'},
+    {flag:'🇫🇷',name:'فرنسية',url:'https://iptv-org.github.io/iptv/countries/fr.m3u'},
+    {flag:'🇬🇧',name:'إنجليزية',url:'https://iptv-org.github.io/iptv/countries/gb.m3u'},
+    {flag:'🇹🇷',name:'تركية',url:'https://iptv-org.github.io/iptv/countries/tr.m3u'},
+  ],
+  category:[
+    {flag:'🎬',name:'أفلام',url:'https://iptv-org.github.io/iptv/categories/movies.m3u'},
+    {flag:'⚽',name:'رياضة',url:'https://iptv-org.github.io/iptv/categories/sports.m3u'},
+    {flag:'📰',name:'أخبار',url:'https://iptv-org.github.io/iptv/categories/news.m3u'},
+    {flag:'👶',name:'أطفال',url:'https://iptv-org.github.io/iptv/categories/kids.m3u'},
+  ]
+};
+
+function buildSmartersUI(){
+  renderSmartersSection('smartersArabic',   SMARTERS_URLS.arabic);
+  renderSmartersSection('smartersEurope',   SMARTERS_URLS.europe);
+  renderSmartersSection('smartersCategory', SMARTERS_URLS.category);
+}
+
+function renderSmartersSection(elId, items){
+  document.getElementById(elId).innerHTML = items.map((item,i)=>`
+    <div style="margin-bottom:10px;">
+      <div style="font-size:0.75rem;color:var(--text2);margin-bottom:5px;font-weight:700;">
+        ${item.flag} ${item.name}
+      </div>
+      <div class="smarters-url-row">
+        <div class="smarters-url">${item.url}</div>
+        <button class="copy-btn" id="cpbtn-${elId}-${i}" onclick="copyUrl('${item.url}','cpbtn-${elId}-${i}')">📋 نسخ</button>
+      </div>
+    </div>`).join('');
+}
+
+function copyUrl(url, btnId){
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn=document.getElementById(btnId);
+    btn.textContent='✅ تم النسخ';
+    btn.classList.add('copied');
+    toast('✅ تم نسخ الرابط — الصقه في Smarters!','ok');
+    setTimeout(()=>{btn.textContent='📋 نسخ';btn.classList.remove('copied');},2500);
+  }).catch(()=>{
+    // fallback
+    const ta=document.createElement('textarea');
+    ta.value=url; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast('✅ تم النسخ!','ok');
+  });
+}
+
+// ═══ TABS ═══
+function goTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+name));
+  if(name==='saved')   renderSaved();
+  if(name==='channels') renderChannels();
+}
+
+// ═══ LOADING ═══
+function showLoading(text,sub){
+  document.getElementById('loadingText').textContent=text||'جاري التحميل...';
+  document.getElementById('loadingSub').textContent=sub||'يرجى الانتظار';
+  document.getElementById('loadingBar').style.width='0%';
+  document.getElementById('loadingOverlay').classList.add('show');
+}
+function hideLoading(){ document.getElementById('loadingOverlay').classList.remove('show'); }
+
+// ═══ PROXIES ═══
+const PROXIES=[
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u=>u
+];
+
+async function fetchWithProxy(url){
+  for(const p of PROXIES){
+    try{
+      const r=await fetch(p(url),{signal:AbortSignal.timeout(15000)});
+      if(r.ok){const t=await r.text(); if(t.includes('#EXTM3U')||t.includes('#EXTINF')) return t;}
+    }catch{}
+  }
+  throw new Error('فشل التحميل');
+}
+
+// ═══ LOAD ═══
+async function quickLoad(url,label){
+  showLoading(`⏳ جاري تحميل ${label}...`,'قد يستغرق بضع ثوانٍ');
+  try{
+    const txt=await fetchWithProxy(url);
+    parseAndLoad(txt,label);
+  }catch{
+    hideLoading();
+    toast('❌ فشل التحميل — تحقق من الإنترنت','err');
+  }
+}
+
+async function loadURL(){
+  const url=document.getElementById('urlInput').value.trim();
+  if(!url){toast('أدخل رابطاً أولاً','err');return;}
+  await quickLoad(url,'قائمة مخصصة');
+}
+
+function parseAndLoad(txt,label){
+  allCh=parseM3U(txt);
+  filteredCh=[...allCh].map(c=>({...c,sel:true}));
+  updateStats();
+  enableButtons();
+  document.getElementById('btnFilter').disabled=false;
+  document.getElementById('lastActionCard').style.display='block';
+  document.getElementById('lastActionInfo').textContent=`${label} — ${allCh.length} قناة`;
+  hideLoading();
+  toast(`✅ تم تحميل ${allCh.length} قناة من ${label}`,'ok');
+  goTab('channels');
+}
+
+function enableButtons(){
+  ['btnExport','btnSave','btnTest','btnExportHome','btnTestHome'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.disabled=false;
+  });
+}
+
+function parseM3U(txt){
+  const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
+  const out=[];let cur=null;
+  for(const line of lines){
+    if(line.startsWith('#EXTINF')){
+      const name=(line.match(/,(.+)$/)||[])[1]?.trim()||'بدون اسم';
+      const group=(line.match(/group-title="([^"]*)"/i)||[])[1]||'';
+      const logo=(line.match(/tvg-logo="([^"]*)"/i)||[])[1]||'';
+      cur={name,group,logo,url:'',extinf:line,status:'unknown',sel:true};
+    }else if(/^https?:|^rtmp:|^rtsp:/.test(line)){
+      if(cur){cur.url=line;out.push(cur);cur=null;}
+    }
+  }
+  return out;
+}
+
+// ═══ FILTER ═══
+function applyFilter(){
+  if(!allCh.length){toast('لا توجد قنوات محملة','err');return;}
+  const tags=[...document.querySelectorAll('#filterTags .ftag.on')].map(t=>t.dataset.k);
+  filteredCh=(tags.includes('all')||!tags.length)?[...allCh].map(c=>({...c,sel:true})):
+    allCh.filter(ch=>tags.includes(getCat(ch))).map(c=>({...c,sel:true}));
+  updateStats();enableButtons();
+  toast(`✅ فُلتر: ${filteredCh.length} قناة`,'ok');
+  goTab('channels');
+}
+
+// ═══ RENDER ═══
+function renderChannels(){
+  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  const list=q?filteredCh.filter(c=>c.name.toLowerCase().includes(q)||c.group.toLowerCase().includes(q)):filteredCh;
+  const container=document.getElementById('chList');
+  updateSelCount();
+  if(!list.length){
+    container.innerHTML=`<div class="empty"><span class="empty-icon">📺</span><p>${filteredCh.length?'لا توجد نتائج':'اذهب للرئيسية واختر مصدراً'}</p></div>`;
+    return;
+  }
+  container.innerHTML=list.map(ch=>{
+    const cat=getCat(ch); const icon=CAT_ICONS[cat]||'📡';
+    const idx=filteredCh.indexOf(ch);
+    const dotCls=ch.status==='ok'?'ok':ch.status==='dead'?'dead':ch.status==='testing'?'testing':'';
+    const itemCls=ch.sel?'sel':ch.status==='dead'?'dead':'';
+    const logoHtml=ch.logo?`<img src="${ch.logo}" onerror="this.parentNode.innerHTML='${icon}'" loading="lazy">`:icon;
+    return `<div class="ch-item ${itemCls}" onclick="toggleSel(${idx})">
+      <div class="ch-thumb">${logoHtml}</div>
+      <div class="ch-info">
+        <div class="ch-name">${ch.name}</div>
+        <div class="ch-group">${ch.group||cat}</div>
+      </div>
+      <div class="dot ${dotCls}"></div>
+    </div>`;
+  }).join('');
+}
+
+function updateSelCount(){
+  const sel=filteredCh.filter(c=>c.sel).length;
+  document.getElementById('selCount').textContent=sel?`${sel} محدد`:'';
+}
+
+function toggleSel(i){if(filteredCh[i]){filteredCh[i].sel=!filteredCh[i].sel;renderChannels();}}
+function selectAll()   {filteredCh.forEach(c=>c.sel=true);renderChannels();}
+function deselectAll() {filteredCh.forEach(c=>c.sel=false);renderChannels();}
+function selectWorking(){filteredCh.forEach(c=>c.sel=c.status==='ok');renderChannels();toast(filteredCh.filter(c=>c.sel).length+' قناة شغالة','ok');}
+
+// ═══ TEST (أسرع) ═══
+async function startTest(){
+  if(testing||!filteredCh.length) return;
+  testing=true;
+  const box=document.getElementById('progressBox');
+  box.classList.add('show');
+  const total=filteredCh.length;
+  const batch=parseInt(document.getElementById('settingBatch')?.value||20); // أسرع: 20 بدل 10
+  const timeout=(parseInt(document.getElementById('settingTimeout')?.value||6))*1000; // أسرع: 6 بدل 8
+
+  for(let i=0;i<total;i+=batch){
+    await Promise.all(filteredCh.slice(i,i+batch).map(ch=>testCh(ch,timeout)));
+    const done=Math.min(i+batch,total);
+    const pct=Math.round(done/total*100);
+    document.getElementById('pBar').style.width=pct+'%';
+    document.getElementById('pLabel').textContent=`فحص سريع... ${done}/${total}`;
+    document.getElementById('pPct').textContent=pct+'%';
+    updateStats();renderChannels();
+    await sleep(50);
+  }
+  testing=false;
+  box.classList.remove('show');
+  const ok=filteredCh.filter(c=>c.status==='ok').length;
+  toast(`⚡ انتهى! شغالة: ${ok} من ${total}`,'ok');
+  updateStats();renderChannels();
+}
+
+function testCh(ch,ms){
+  ch.status='testing';
+  return new Promise(res=>{
+    const vid=document.createElement('video');
+    vid.muted=true;vid.preload='metadata';
+    const t=setTimeout(()=>{vid.src='';ch.status='dead';res();},ms);
+    vid.onloadedmetadata=()=>{clearTimeout(t);ch.status='ok';res();};
+    vid.onerror=()=>{
+      clearTimeout(t);
+      fetch(ch.url,{method:'HEAD',mode:'no-cors',signal:AbortSignal.timeout(ms/2)})
+        .then(()=>{ch.status='ok';}).catch(()=>{ch.status='dead';}).finally(res);
+    };
+    vid.src=ch.url;
+  });
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// ═══ EXPORT ═══
+function exportSelected(){
+  const list=filteredCh.filter(c=>c.sel);
+  if(!list.length){toast('لا توجد قنوات محددة','err');return;}
+  downloadM3U(list,'iptv-smart');
+}
+
+function downloadM3U(list, baseName){
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'});
+  const timeStr=now.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
+  const header=[
+    '#EXTM3U',
+    `## IPTV Smart v3 — آخر تحديث: ${dateStr} الساعة ${timeStr}`,
+    `## Last-Updated: ${now.toISOString()}`,
+    `## Total-Channels: ${list.length}`,
+    ``
+  ].join('\n');
+  const body=list.map(c=>`${c.extinf}\n${c.url}`).join('\n');
+  const blob=new Blob([header+body],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  const d=`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+  a.download=`${baseName}-${d}.txt`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  localStorage.setItem('iptv_last_export',now.toISOString());
+  updateLastExportBadge();
+  toast(`💾 تم حفظ ${list.length} قناة — غيّر الامتداد من .txt إلى .m3u`,'ok');
+}
+
+// ═══ FETCH & SAVE ═══
+async function fetchAndSave(url,name){
+  showLoading(`⏳ جاري جلب ${name}...`,'يتم تحضير الملف تلقائياً');
+  try{
+    const txt=await fetchWithProxy(url);
+    const channels=parseM3U(txt);
+    if(!channels.length) throw new Error('لا قنوات');
+    allCh=channels;
+    filteredCh=[...allCh].map(c=>({...c,sel:true}));
+    updateStats();enableButtons();
+    document.getElementById('lastActionCard').style.display='block';
+    document.getElementById('lastActionInfo').textContent=`${name} — ${channels.length} قناة`;
+    hideLoading();
+    downloadM3U(channels,name);
+  }catch{hideLoading();toast(`❌ فشل جلب ${name}`,'err');}
+}
+
+async function fetchAndSaveAll(){
+  const sources=[
+    {url:'https://iptv-org.github.io/iptv/languages/ara.m3u',name:'عربي'},
+    {url:'https://iptv-org.github.io/iptv/countries/de.m3u', name:'ألماني'},
+    {url:'https://iptv-org.github.io/iptv/categories/sports.m3u',name:'رياضة'},
+    {url:'https://iptv-org.github.io/iptv/categories/movies.m3u',name:'أفلام'},
+    {url:'https://iptv-org.github.io/iptv/categories/news.m3u',  name:'أخبار'},
+  ];
+  showLoading('⏳ جاري جلب كل المصادر...','قد يستغرق دقيقة واحدة');
+  let merged=[];
+  for(let i=0;i<sources.length;i++){
+    const src=sources[i];
+    document.getElementById('loadingSub').textContent=`جاري جلب: ${src.name} (${i+1}/${sources.length})`;
+    document.getElementById('loadingBar').style.width=((i/sources.length)*100)+'%';
+    try{const txt=await fetchWithProxy(src.url);merged=merged.concat(parseM3U(txt));}catch{}
+  }
+  if(!merged.length){hideLoading();toast('❌ فشل جلب المصادر','err');return;}
+  const seen=new Set();
+  const unique=merged.filter(c=>{if(seen.has(c.url))return false;seen.add(c.url);return true;});
+  allCh=unique;
+  filteredCh=[...allCh].map(c=>({...c,sel:true}));
+  updateStats();enableButtons();
+  document.getElementById('lastActionCard').style.display='block';
+  document.getElementById('lastActionInfo').textContent=`الكل — ${unique.length} قناة`;
+  hideLoading();
+  downloadM3U(unique,'iptv-smart-ALL');
+}
+
+// ═══ SAVE LIST ═══
+function saveList(){
+  const sel=filteredCh.filter(c=>c.sel);
+  if(!sel.length){toast('حدد قنوات أولاً','err');return;}
+  const name=prompt('اسم القائمة:',`قائمة ${new Date().toLocaleDateString('ar')}`)||'قائمة جديدة';
+  savedLists.push({name,count:sel.length,date:new Date().toISOString(),channels:sel.map(c=>({name:c.name,group:c.group,url:c.url,extinf:c.extinf}))});
+  localStorage.setItem('iptv_saved',JSON.stringify(savedLists));
+  toast(`📌 تم حفظ "${name}"`,'ok');
+  document.getElementById('infoSaved') && (document.getElementById('infoSaved').textContent=savedLists.length);
+}
+
+function renderSaved(){
+  const container=document.getElementById('savedList');
+  if(!savedLists.length){
+    container.innerHTML=`<div class="empty"><span class="empty-icon">📂</span><p>لا توجد قوائم محفوظة بعد</p></div>`;return;
+  }
+  container.innerHTML=savedLists.map((l,i)=>`
+    <div class="saved-item" onclick="loadSaved(${i})">
+      <div style="font-size:1.5rem">📋</div>
+      <div class="saved-info">
+        <div class="saved-name">${l.name}</div>
+        <div class="saved-meta">${l.count} قناة • ${new Date(l.date).toLocaleDateString('ar')}</div>
+      </div>
+      <button class="btn btn-green" style="font-size:0.68rem;padding:6px 10px;" onclick="event.stopPropagation();exportSavedList(${i})">💾 USB</button>
+      <div style="color:#e74c3c;font-size:1rem;padding:4px 8px;cursor:pointer;" onclick="event.stopPropagation();deleteSaved(${i})">🗑️</div>
+    </div>`).join('');
+}
+
+function loadSaved(i){
+  const l=savedLists[i];
+  allCh=l.channels.map(c=>({...c,status:'unknown',sel:true}));
+  filteredCh=[...allCh];
+  updateStats();enableButtons();
+  toast(`✅ تم تحميل ${l.name}`,'ok');
+  goTab('channels');
+}
+
+function exportSavedList(i){
+  const l=savedLists[i];
+  downloadM3U(l.channels.map(c=>({...c,extinf:c.extinf})),l.name.replace(/\s/g,'_'));
+}
+
+function deleteSaved(i){
+  if(!confirm(`حذف "${savedLists[i].name}"؟`))return;
+  savedLists.splice(i,1);
+  localStorage.setItem('iptv_saved',JSON.stringify(savedLists));
+  renderSaved();toast('🗑️ تم الحذف');
+}
+
+// ═══ STATS ═══
+function updateStats(){
+  document.getElementById('sTotal').textContent   =allCh.length;
+  document.getElementById('sFiltered').textContent =filteredCh.length;
+  document.getElementById('sWorking').textContent  =filteredCh.filter(c=>c.status==='ok').length;
+  document.getElementById('sDead').textContent     =filteredCh.filter(c=>c.status==='dead').length;
+}
+
+// ═══ UPDATE BADGE ═══
+function updateLastExportBadge(){
+  const iso=localStorage.getItem('iptv_last_export');
+  const badge=document.getElementById('updateBadge');
+  const warn=document.getElementById('updateWarning');
+  if(!iso){
+    badge.className='update-badge';badge.textContent='⏳ لم يتم التصدير بعد';
+    if(warn)warn.style.display='none';return;
+  }
+  const d=new Date(iso);
+  const days=Math.floor((Date.now()-d.getTime())/86400000);
+  const dateStr=d.toLocaleDateString('ar-SA',{day:'numeric',month:'short'});
+  if(days>=7){
+    badge.className='update-badge warn';badge.textContent=`⚠️ ${dateStr} — ${days} يوم`;
+    if(warn)warn.style.display='block';
+  }else{
+    badge.className='update-badge ok';badge.textContent=`✅ ${dateStr} — ${days===0?'اليوم':days+' يوم'}`;
+    if(warn)warn.style.display='none';
+  }
+}
+
+// ═══ FILE UPLOAD ═══
+document.getElementById('fileInput').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  showLoading('جاري قراءة الملف...',f.name);
+  const r=new FileReader();
+  r.onload=ev=>parseAndLoad(ev.target.result,f.name);
+  r.readAsText(f);
+});
+const uz=document.getElementById('uploadZone');
+uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('drag');});
+uz.addEventListener('dragleave',()=>uz.classList.remove('drag'));
+uz.addEventListener('drop',e=>{
+  e.preventDefault();uz.classList.remove('drag');
+  const f=e.dataTransfer.files[0];if(!f)return;
+  showLoading('جاري قراءة الملف...',f.name);
+  const r=new FileReader();r.onload=ev=>parseAndLoad(ev.target.result,f.name);r.readAsText(f);
+});
+
+// ═══ FILTER TAGS ═══
+document.querySelectorAll('#filterTags .ftag').forEach(tag=>{
+  tag.addEventListener('click',()=>{
+    if(tag.dataset.k==='all'){
+      document.querySelectorAll('#filterTags .ftag').forEach(t=>t.classList.remove('on'));
+      tag.classList.add('on');
+    }else{
+      document.querySelector('#filterTags [data-k="all"]').classList.remove('on');
+      tag.classList.toggle('on');
+    }
+  });
+});
+
+// ═══ INSTALL ═══
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('installBanner').style.display='flex';
+});
+function doInstall(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(r=>{
+      if(r.outcome==='accepted')toast('🎉 تم التثبيت!','ok');
+      deferredPrompt=null;
+      document.getElementById('installBanner').style.display='none';
+    });
+  }else{toast('افتح القائمة ← "إضافة للشاشة الرئيسية"','info');}
+}
+
+// ═══ TOAST ═══
+let toastTimer;
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=`toast show ${type}`;
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.className='toast',3500);
+}
+
+// ═══ SW ═══
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+// ═══ INIT ═══
+renderSaved();
+updateStats();
+updateLastExportBadge();
+buildSmartersUI();
+</script>
+</body>
+</html>
